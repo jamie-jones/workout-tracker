@@ -1,13 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const path = require("path";)
 
 const PORT = process.env.PORT || 3000;
 
+// MIDDLEWARE
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// MONGOOSE MIDDLEWARE
 mongoose.connect(
   process.env.MONGODB_URI || "mongodb://localhost/track-my-workout-now",
   {
@@ -18,21 +21,32 @@ mongoose.connect(
   }
 );
 
-const exerciseController = require("./controllers/exerciseController");
-const indexController = require("./controllers/indexController");
-const statsController = require("./controllers/statsController");
-const apiController = require("./controllers/apiController.js");
-const workoutController = require("./controllers/workoutController");
-
-app.get("/", (req, res) => {
-  res.send("index.html");
+const connection = mongoose.connection;
+connection.on("connected", () => {
+  console.log("Mongoose successfully connected");
 });
 
-app.use(exerciseController);
-app.use(indexController);
-app.use(statsController);
-app.use(apiController);
-app.use(workoutController);
+connection.on("error", (err) => {
+  console.log("Mongoose connection error: ", err)
+})
+
+const workoutController = require("./controllers/workoutController");
+
+app.get("/api/config", (req, res) => {
+  res.json({
+    success: true,
+  });
+});
+
+app.use("/", workoutController);
+
+app.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/exercise.html"));
+});
+
+app.get("/stats", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public.stats.html"))
+})
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);

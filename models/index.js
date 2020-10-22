@@ -1,4 +1,4 @@
   
 module.exports = {
-    Pizza: require("./Workout"),
+    Workout: require("./Workout"),
   };
