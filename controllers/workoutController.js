@@ -1,14 +1,12 @@
-const { Router } = require("express");
 const express = require("express");
 const router = express.Router();
-
 const db = require("../models");
 
-router.get("/api/workout", (req, res) => {
+router.get("/api/workouts", (req, res) => {
   db.Workout.find({})
     .populate("workouts")
-    .then((foundWorkouts) => {
-      res.json(foundWorkouts);
+    .then((foundWorkout) => {
+      res.json(foundWorkout);
     })
     .catch((err) => {
       console.log(err);
@@ -20,29 +18,43 @@ router.get("/api/workout", (req, res) => {
     });
 });
 
-router.get("/api/workout/:id", (req, res) => {
-  db.Workout.findById(req.params.id)
-    .populate("workouts")
-    .then((foundWorkouts) => {
-      res.json(foundWorkouts);
+router.get("/api/workouts/range", (req, res) => {
+  db.Workout.find({})
+    .then((foundWorkout) => {
+      res.json(foundWorkout);
     })
     .catch((err) => {
       console.log(err);
       res.json({
         error: true,
         data: null,
-        message: `Failed to retrieve workout with id: ${req.params.id}`,
       });
     });
 });
 
-router.post("/api/workout", (req, res) => {
+router.get("/api/workouts/:id", (req, res) => {
+  db.Workout.find({})
+    .then((foundWorkout) => {
+      res.json(foundWorkout);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        error: true,
+        data: null,
+        message: "Failed to retrieve workout.",
+      });
+    });
+});
+
+router.post("/api/workouts", (req, res) => {
   db.Workout.create(req.body)
     .then((newWorkout) => {
       res.json(newWorkout);
     })
     .catch((err) => {
-      console.log({
+      console.log(err);
+      res.json({
         error: true,
         data: null,
         message: "Failed to create a new workout.",
@@ -50,8 +62,8 @@ router.post("/api/workout", (req, res) => {
     });
 });
 
-router.put("/api/workout/:id", (req, res) => {
-  db.Workout.findByIdAndUpdate(req.params.id, req.body, { new: true })
+router.put("/api/workouts/:id", (req, res) => {
+  db.Workout.findByIdAndUpdate(req.params.id, { $push: { exercise: req.body } })
     .then((updatedWorkout) => {
       res.json(updatedWorkout);
     })
@@ -60,15 +72,15 @@ router.put("/api/workout/:id", (req, res) => {
       res.json({
         error: true,
         data: null,
-        message: "Failed to update pizza.",
+        message: "Failed to update workout.",
       });
     });
 });
 
-router.delete("/api/workout/:id", (req, res) => {
+router.delete("/api/workouts/:id", (req, res) => {
   db.Workout.findByIdAndDelete(req.params.id)
-    .then((deletedWorkout) => {
-      res.json(deletedWorkout);
+    .then((result) => {
+      res.json(result);
     })
     .catch((err) => {
       console.log(err);
