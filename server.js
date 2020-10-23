@@ -14,15 +14,12 @@ const workoutController = require("./controllers/workoutController");
 app.use(workoutController);
 
 // MONGOOSE MIDDLEWARE
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/track-my-workout-now",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  }
-);
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 
 const connection = mongoose.connection;
 connection.on("connected", () => {
