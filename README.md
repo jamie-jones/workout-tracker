@@ -31,7 +31,11 @@ Here's what the application looks like!
 
 Deployed site:
 
-https://jamjon94.github.io/workout-tracker/
+Heroku site:
+https://track-my-workout-now.herokuapp.com/
+
+GitHub:
+https://github.com/jamjon94/workout-tracker
 
 ## LICENSE
 
